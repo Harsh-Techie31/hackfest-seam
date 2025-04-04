@@ -4,6 +4,8 @@ class TicketInfo {
   final String seatNumber;
   final String entranceGate;
   final String contactNumber;
+  final String email;
+  final String password;
   final String? eventName;
   final String? eventDateTime;
 
@@ -13,6 +15,8 @@ class TicketInfo {
     required this.seatNumber,
     required this.entranceGate,
     required this.contactNumber,
+    required this.email,
+    required this.password,
     this.eventName,
     this.eventDateTime,
   });
@@ -24,6 +28,8 @@ class TicketInfo {
       seatNumber: json['seatNumber'] ?? '',
       entranceGate: json['entranceGate'] ?? '',
       contactNumber: json['contactInfo'] ?? '',
+      email: json['email'] ?? '',
+      password: json['password'] ?? '',
       eventName: json['eventName'],
       eventDateTime: json['eventDateTime'],
     );
@@ -36,6 +42,8 @@ class TicketInfo {
       'seatNumber': seatNumber,
       'entranceGate': entranceGate,
       'contactInfo': contactNumber,
+      'email': email,
+      'password': password,
       'eventName': eventName,
       'eventDateTime': eventDateTime,
     };
