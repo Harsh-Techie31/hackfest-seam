@@ -101,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen>
             fontSize: 24,
           ),
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         elevation: 0,
         actions: [
           IconButton(
@@ -263,36 +263,7 @@ class _HomeScreenState extends State<HomeScreen>
           _buildHeroSection(),
           SizedBox(height: 24),
           _buildUpcomingEvents(),
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //     children: [
-          //       Expanded(child: EmojiExpressionMeter(score: audienceScore)),
-          //       Column(
-          //         children: [
-          //           ElevatedButton(
-          //             onPressed: () {
-          //               setState(() {
-          //                 audienceScore = (audienceScore + 20).clamp(0, 100);
-          //               });
-          //             },
-          //             style: ElevatedButton.styleFrom(
-          //               backgroundColor: Colors.indigoAccent,
-          //               shape: RoundedRectangleBorder(
-          //                 borderRadius: BorderRadius.circular(12),
-          //               ),
-          //             ),
-          //             child: const Text(
-          //               '+20',
-          //               style: TextStyle(color: Colors.white),
-          //             ),
-          //           ),
-          //         ],
-          //       ),
-          //     ],
-          //   ),
-          // ),
+        
           SizedBox(height: 24),
           // SizedBox(height: 24),
           _buildQuickActions(),
@@ -415,83 +386,85 @@ class _HomeScreenState extends State<HomeScreen>
     IconData icon,
     Color color,
   ) {
-    return Container(
-      width: 280,
-      margin: EdgeInsets.only(right: 16),
-      decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            right: -20,
-            top: -20,
-            child: Icon(icon, size: 100, color: color.withOpacity(0.1)),
-          ),
-          Padding(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: GoogleFonts.poppins(
-                    color: textColor,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                SizedBox(height: 16),
-                Row(
-                  children: [
-                    Icon(Icons.access_time, color: textLightColor, size: 16),
-                    SizedBox(width: 8),
-                    Text(
-                      time,
-                      style: GoogleFonts.poppins(
-                        color: textLightColor,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 8),
-                Row(
-                  children: [
-                    Icon(Icons.location_on, color: textLightColor, size: 16),
-                    SizedBox(width: 8),
-                    Text(
-                      location,
-                      style: GoogleFonts.poppins(
-                        color: textLightColor,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
-                Spacer(),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: color,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: Text('Add to Calendar'),
-                ),
-              ],
+    return Flexible(
+      child: Container(
+        width: 280,
+        margin: EdgeInsets.only(right: 16),
+        decoration: BoxDecoration(
+          color: cardColor,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: Offset(0, 5),
             ),
-          ),
-        ],
+          ],
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+              right: -20,
+              top: -20,
+              child: Icon(icon, size: 100, color: color.withOpacity(0.1)),
+            ),
+            Padding(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.poppins(
+                      color: textColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Icon(Icons.access_time, color: textLightColor, size: 16),
+                      SizedBox(width: 8),
+                      Text(
+                        time,
+                        style: GoogleFonts.poppins(
+                          color: textLightColor,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Icon(Icons.location_on, color: textLightColor, size: 16),
+                      SizedBox(width: 8),
+                      Text(
+                        location,
+                        style: GoogleFonts.poppins(
+                          color: textLightColor,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Spacer(),
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: color,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text('Add to Calendar'),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -559,14 +532,14 @@ class _HomeScreenState extends State<HomeScreen>
               },
             ),
             _buildActionCard(
-              'Chat Bot',
-              Icons.smart_toy,
+              'Order Food',
+              Icons.local_restaurant_outlined,
               Color(0xFF4CAF50),
               () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ChatbotScreen(),
+                    builder: (context) => BrandSelectionScreen(),
                   ),
                 );
               },
