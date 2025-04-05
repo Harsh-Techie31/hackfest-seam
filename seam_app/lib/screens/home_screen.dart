@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:seam_app/screens/BrandSelection.dart';
+import 'package:seam_app/screens/ComplaintList.dart';
 import 'package:seam_app/screens/ComplaintScreen.dart';
 import 'package:seam_app/screens/FeedbackScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:seam_app/screens/LostScreen.dart';
 import 'package:seam_app/services/firestore_service.dart';
 import 'package:seam_app/models/attendee-model.dart';
 import 'package:seam_app/widget/emojindicator.dart';
@@ -531,14 +533,40 @@ class _HomeScreenState extends State<HomeScreen>
               _showComplaintDialog,
             ),
             _buildActionCard(
-              'Order Food',
-              Icons.restaurant,
+              'Live Complaints',
+              Icons.support_agent,
+              Color(0xFFEF5350),
+              () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Complaintlist(),
+                  ),
+                );
+              },
+            ),
+            _buildActionCard(
+              'Lost & Found',
+              Icons.find_in_page,
+            Color(0xFF6A1B9A),
+              () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LostAndFoundScreen(),
+                  ),
+                );
+              },
+            ),
+            _buildActionCard(
+              'Chat Bot',
+              Icons.smart_toy,
               Color(0xFF4CAF50),
               () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => BrandSelectionScreen(),
+                    builder: (context) => ChatbotScreen(),
                   ),
                 );
               },

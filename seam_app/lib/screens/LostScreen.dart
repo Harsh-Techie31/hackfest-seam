@@ -79,7 +79,7 @@ class _LostAndFoundScreenState extends State<LostAndFoundScreen>
         'timestamp': FieldValue.serverTimestamp(),
         'phone_number': _phone,
         'imageUrl': imageUrl,
-        'verified': true,
+        'verified': false,
       });
 
       ScaffoldMessenger.of(
@@ -96,128 +96,210 @@ class _LostAndFoundScreenState extends State<LostAndFoundScreen>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Lost & Found"),
+        title: Text(
+          "Lost & Found",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: theme.primaryColor,
+          ),
+        ),
         centerTitle: true,
-        backgroundColor: Colors.indigoAccent,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: Colors.white,
-          tabs: [Tab(text: 'Report Item'), Tab(text: 'View Items')],
+          indicatorColor: theme.primaryColor,
+          labelColor: theme.primaryColor,
+          unselectedLabelColor: Colors.grey,
+          tabs: [
+            Tab(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.add_circle_outline, size: 20),
+                  SizedBox(width: 8),
+                  Text('Report Item'),
+                ],
+              ),
+            ),
+            Tab(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.list_alt, size: 20),
+                  SizedBox(width: 8),
+                  Text('View Items'),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Form(
-                  key: _formKey,
-                  child: SingleChildScrollView(
+          SingleChildScrollView(
+            padding: const EdgeInsets.all(20.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: theme.primaryColor.withOpacity(0.1),
+                          spreadRadius: 1,
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text(
+                          "Item Details",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: theme.primaryColor,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
                         TextFormField(
                           decoration: InputDecoration(
                             labelText: 'Item Name',
-                            border: OutlineInputBorder(),
+                            labelStyle: TextStyle(color: theme.primaryColor),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: theme.primaryColor.withOpacity(0.3)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: theme.primaryColor),
+                            ),
+                            filled: true,
+                            fillColor: theme.primaryColor.withOpacity(0.05),
                           ),
                           onSaved: (value) => _itemName = value!,
-                          validator:
-                              (value) =>
-                                  value!.isEmpty
-                                      ? 'Please enter item name'
-                                      : null,
+                          validator: (value) => value!.isEmpty ? 'Please enter item name' : null,
                         ),
-                        SizedBox(height: 12),
+                        const SizedBox(height: 16),
                         TextFormField(
                           decoration: InputDecoration(
                             labelText: 'Description',
-                            border: OutlineInputBorder(),
+                            labelStyle: TextStyle(color: theme.primaryColor),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: theme.primaryColor.withOpacity(0.3)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: theme.primaryColor),
+                            ),
+                            filled: true,
+                            fillColor: theme.primaryColor.withOpacity(0.05),
                           ),
                           onSaved: (value) => _description = value!,
-                          validator:
-                              (value) =>
-                                  value!.isEmpty
-                                      ? 'Please enter description'
-                                      : null,
+                          validator: (value) => value!.isEmpty ? 'Please enter description' : null,
                         ),
-                        SizedBox(height: 12),
+                        const SizedBox(height: 16),
                         TextFormField(
                           decoration: InputDecoration(
                             labelText: 'Location',
-                            border: OutlineInputBorder(),
+                            labelStyle: TextStyle(color: theme.primaryColor),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: theme.primaryColor.withOpacity(0.3)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: theme.primaryColor),
+                            ),
+                            filled: true,
+                            fillColor: theme.primaryColor.withOpacity(0.05),
                           ),
                           onSaved: (value) => _location = value!,
-                          validator:
-                              (value) =>
-                                  value!.isEmpty
-                                      ? 'Please enter location'
-                                      : null,
+                          validator: (value) => value!.isEmpty ? 'Please enter location' : null,
                         ),
-                        SizedBox(height: 12),
+                        const SizedBox(height: 16),
                         TextFormField(
                           decoration: InputDecoration(
                             labelText: 'Contact info (Phone number)',
-                            border: OutlineInputBorder(),
+                            labelStyle: TextStyle(color: theme.primaryColor),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: theme.primaryColor.withOpacity(0.3)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: theme.primaryColor),
+                            ),
+                            filled: true,
+                            fillColor: theme.primaryColor.withOpacity(0.05),
                           ),
                           onSaved: (value) => _phone = value!,
-                          validator:
-                              (value) =>
-                                  value!.isEmpty
-                                      ? 'Please enter the phone number'
-                                      : null,
+                          validator: (value) => value!.isEmpty ? 'Please enter the phone number' : null,
                         ),
-                        SizedBox(height: 12),
-                        DropdownButtonFormField<String>(
-                          value: _type,
-                          items: [
-                            DropdownMenuItem(
-                              value: 'lost',
-                              child: Text('Lost'),
+                        const SizedBox(height: 16),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: theme.primaryColor.withOpacity(0.3)),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: DropdownButtonFormField<String>(
+                            value: _type,
+                            items: [
+                              DropdownMenuItem(
+                                value: 'lost',
+                                child: Text('Lost'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'found',
+                                child: Text('Found'),
+                              ),
+                            ],
+                            onChanged: (val) => setState(() => _type = val!),
+                            decoration: InputDecoration(
+                              labelText: 'Type',
+                              labelStyle: TextStyle(color: theme.primaryColor),
+                              border: InputBorder.none,
                             ),
-                            DropdownMenuItem(
-                              value: 'found',
-                              child: Text('Found'),
-                            ),
-                          ],
-                          onChanged: (val) => setState(() => _type = val!),
-                          decoration: InputDecoration(
-                            labelText: 'Type',
-                            border: OutlineInputBorder(),
                           ),
                         ),
-                        SizedBox(height: 12),
+                        const SizedBox(height: 20),
                         ElevatedButton.icon(
-                          //icon: Icon(Icons.image_outlined),
+                          icon: Icon(Icons.image_outlined, color: Colors.white),
                           label: Text(
                             "Pick Image (Optional)",
-                            style: TextStyle(color: Colors.black87),
+                            style: TextStyle(color: Colors.white),
                           ),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.indigoAccent.shade200,
-                            padding: EdgeInsets.symmetric(
-                              vertical: 14,
-                              horizontal: 5,
+                            backgroundColor: theme.primaryColor,
+                            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                           onPressed: _pickImage,
                         ),
-
+                        const SizedBox(height: 16),
                         if (_image != null)
                           Column(
                             children: [
-                              SizedBox(height: 12),
                               ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(12),
                                 child: Image.file(
                                   _image!,
                                   height: 150,
@@ -225,49 +307,56 @@ class _LostAndFoundScreenState extends State<LostAndFoundScreen>
                                   fit: BoxFit.cover,
                                 ),
                               ),
-                              SizedBox(height: 6),
+                              const SizedBox(height: 8),
                               Text(
                                 "Image selected",
                                 style: TextStyle(
                                   color: Colors.green[700],
-                                  fontStyle: FontStyle.italic,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ],
                           )
                         else
-                          Padding(
-                            padding: const EdgeInsets.only(top: 12),
-                            child: Text(
-                              "No image selected",
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontStyle: FontStyle.italic,
-                              ),
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: theme.primaryColor.withOpacity(0.05),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: theme.primaryColor.withOpacity(0.2)),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.image_not_supported_outlined, color: Colors.grey),
+                                const SizedBox(width: 8),
+                                Text(
+                                  "No image selected",
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                              ],
                             ),
                           ),
-
-                        SizedBox(height: 20),
-                        Center(
+                        const SizedBox(height: 24),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 50,
                           child: ElevatedButton.icon(
-                            //icon: Icon(Icons.check_circle_outline),
+                            icon: Icon(Icons.check_circle_outline, color: Colors.white),
                             label: Text(
-                              "Submit",
-                              style: TextStyle(color: Colors.black87),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 24,
-                                vertical: 14,
-                              ),
-                              backgroundColor: Colors.indigoAccent,
-                              textStyle: TextStyle(
+                              "Submit Report",
+                              style: TextStyle(
+                                color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
                               ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: theme.primaryColor,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
+                              elevation: 0,
                             ),
                             onPressed: _submitReport,
                           ),
@@ -275,87 +364,130 @@ class _LostAndFoundScreenState extends State<LostAndFoundScreen>
                       ],
                     ),
                   ),
-                ),
+                ],
               ),
             ),
           ),
           StreamBuilder(
-            /*stream: FirebaseFirestore.instance
-                .collection('lost_found').where('type',isEqualTo: 'lost').where('verified',isEqualTo: true)
-                .orderBy('timestamp', descending: true)
-                .snapshots(),*/
-            stream:
-                FirebaseFirestore.instance
-                    .collection('lost_found')
-                    .where('type', isEqualTo: 'lost')
-                    .where('verified', isEqualTo: true)
-                    .snapshots(),
-
+            stream: FirebaseFirestore.instance
+                .collection('lost_found')
+                .where('type', isEqualTo: 'lost')
+                .where('verified', isEqualTo: true)
+                .snapshots(),
             builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (!snapshot.hasData) {
-                return Center(child: Text("No Data"));
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: theme.primaryColor,
+                  ),
+                );
               }
               if (snapshot.data!.docs.isEmpty) {
                 return Center(
-                  child: Text(
-                    'No items reported yet.',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.search_off,
+                        size: 64,
+                        color: Colors.grey[400],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'No items reported yet',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
                 );
               }
               return ListView(
-                padding: EdgeInsets.all(12),
-                children:
-                    snapshot.data!.docs.map((doc) {
-                      final data = doc.data() as Map<String, dynamic>;
-                      return Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                padding: const EdgeInsets.all(20),
+                children: snapshot.data!.docs.map((doc) {
+                  final data = doc.data() as Map<String, dynamic>;
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: theme.primaryColor.withOpacity(0.1),
+                          spreadRadius: 1,
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
                         ),
-                        elevation: 3,
-                        margin: EdgeInsets.symmetric(vertical: 8),
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            backgroundColor:
-                                data['type'] == 'lost'
-                                    ? Colors.red[200]
-                                    : Colors.green[200],
-                            child: Icon(
-                              data['type'] == 'lost'
-                                  ? Icons.warning
-                                  : Icons.check,
-                              color: Colors.white,
-                            ),
+                      ],
+                    ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.all(16),
+                      leading: CircleAvatar(
+                        radius: 24,
+                        backgroundColor: data['type'] == 'lost'
+                            ? Colors.red[100]
+                            : Colors.green[100],
+                        child: Icon(
+                          data['type'] == 'lost' ? Icons.warning : Icons.check,
+                          color: data['type'] == 'lost' ? Colors.red : Colors.green,
+                        ),
+                      ),
+                      title: Text(
+                        data['itemName'] ?? '',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 8),
+                          Text(
+                            data['description'] ?? '',
+                            style: TextStyle(color: Colors.grey[700]),
                           ),
-                          title: Text(
-                            data['itemName'] ?? '',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          const SizedBox(height: 8),
+                          Row(
                             children: [
-                              SizedBox(height: 4),
-                              Text(data['description'] ?? ''),
-                              SizedBox(height: 2),
-                              Text('📍 ${data['location'] ?? ''}'),
-                              SizedBox(height: 2),
-                              Text('📞 ${data['phone_number'] ?? ''}'),
-                              SizedBox(height: 2),
-                              Text(
-                                'Type: ${data['type'] ?? ''}',
-                                style: TextStyle(
-                                  color:
-                                      data['type'] == 'lost'
-                                          ? Colors.red
-                                          : Colors.green,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
+                              Icon(Icons.location_on, size: 16, color: theme.primaryColor),
+                              const SizedBox(width: 4),
+                              Text('${data['location'] ?? ''}'),
                             ],
                           ),
-                        ),
-                      );
-                    }).toList(),
+                          const SizedBox(height: 4),
+                          Row(
+                            children: [
+                              Icon(Icons.phone, size: 16, color: theme.primaryColor),
+                              const SizedBox(width: 4),
+                              Text('${data['phone_number'] ?? ''}'),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: data['type'] == 'lost'
+                                  ? Colors.red[50]
+                                  : Colors.green[50],
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              'Type: ${data['type'] ?? ''}',
+                              style: TextStyle(
+                                color: data['type'] == 'lost' ? Colors.red : Colors.green,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
               );
             },
           ),
