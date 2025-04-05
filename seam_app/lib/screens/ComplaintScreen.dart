@@ -28,6 +28,7 @@ Future<void> _submitComplaint() async {
           'complaint_category':selectedCategory,
           'upvote':0,
           'downvote':0,
+          'status':'Unsolved',
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Feedback submitted successfully!')),
