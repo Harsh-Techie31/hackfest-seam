@@ -4,14 +4,10 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:seam_app/screens/BrandSelection.dart';
 import 'package:seam_app/screens/ComplaintScreen.dart';
 import 'package:seam_app/screens/FeedbackScreen.dart';
-<<<<<<< HEAD
-import 'package:seam_app/screens/LostScreen.dart';
-=======
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:seam_app/services/firestore_service.dart';
 import 'package:seam_app/models/attendee-model.dart';
->>>>>>> c6bf831d9a0c93b91c825f78dd6ce787901eaf66
 import 'chatbot_screen.dart';
 import 'LiveChatScreen.dart';
 
@@ -626,80 +622,11 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   void _showFeedbackDialog() {
-<<<<<<< HEAD
-    Navigator.push(context, MaterialPageRoute(builder: (context)=> Feedbackscreen()));
-  }
-  // void _showFeedbackDialog() {
-  //   showDialog(
-  //     context: context,
-  //     builder:
-  //         (context) => AlertDialog(
-  //           title: Text('Submit Feedback'),
-  //           content: TextField(
-  //             maxLines: 3,
-  //             decoration: InputDecoration(
-  //               hintText: 'Enter your feedback here...',
-  //             ),
-  //           ),
-  //           actions: [
-  //             TextButton(
-  //               onPressed: () => Navigator.pop(context),
-  //               child: Text('Cancel'),
-  //             ),
-  //             ElevatedButton(
-  //               onPressed: () {
-  //                 // TODO: Implement feedback submission
-  //                 Navigator.pop(context);
-  //               },
-  //               child: Text('Submit'),
-  //             ),
-  //           ],
-  //         ),
-  //   );
-  // }
-
-  // void _showComplaintDialog() {
-  //   showDialog(
-  //     context: context,
-  //     builder:
-  //         (context) => AlertDialog(
-  //           title: Text('Submit a Complaint'),
-  //           content: TextField(
-  //             maxLines: 3,
-  //             decoration: InputDecoration(
-  //               hintText: 'Enter your complaint here...',
-  //             ),
-  //           ),
-  //           actions: [
-  //             TextButton(
-  //               onPressed: () => Navigator.pop(context),
-  //               child: Text('Cancel'),
-  //             ),
-  //             ElevatedButton(
-  //               onPressed: () {
-  //                 // TODO: Implement complaint submission
-  //                 Navigator.pop(context);
-  //               },
-  //               child: Text('Submit'),
-  //             ),
-  //           ],
-  //         ),
-  //   );
-  // }
-
-  void _showComplaintDialog(){
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>ComplaintScreen()));
-  }
-
-  void _showLostItemsDialog() {
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>LostAndFoundScreen()));
-=======
     // Navigator.pop(context);
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const Feedbackscreen()),
     );
->>>>>>> c6bf831d9a0c93b91c825f78dd6ce787901eaf66
   }
 
   void _showComplaintDialog() {
