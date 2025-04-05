@@ -51,7 +51,7 @@ class _BrandSelectionScreenState extends State<BrandSelectionScreen> {
     },
     {
       'name': 'McDonald\'s',
-      'logo': 'assets/brands/mcdonald.jpg',
+      'logo': 'assets/brands/mcd.png',
       'rating': 4.3,
       'deliveryTime': '25-35 min',
       'cuisine': 'Fast Food',
@@ -134,7 +134,7 @@ class _BrandSelectionScreenState extends State<BrandSelectionScreen> {
       ],
     },
     {
-      'name': 'Domino\'s',
+      'name': 'Dominos',
       'logo': 'assets/brands/dominos.png',
       'rating': 4.3,
       'deliveryTime': '30-40 min',

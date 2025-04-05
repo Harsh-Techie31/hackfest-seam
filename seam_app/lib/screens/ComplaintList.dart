@@ -51,7 +51,8 @@ class _ComplaintlistState extends State<Complaintlist> {
 
       Map<String, dynamic> updateData = {};
       if (upvoteChange != 0) updateData['upvote'] = upvotes + upvoteChange;
-      if (downvoteChange != 0) updateData['downvote'] = downvotes + downvoteChange;
+      if (downvoteChange != 0)
+        updateData['downvote'] = downvotes + downvoteChange;
 
       if (updateData.isNotEmpty) {
         transaction.update(docRef, updateData);
@@ -64,11 +65,13 @@ class _ComplaintlistState extends State<Complaintlist> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFEFF4F9),
+      backgroundColor: const Color(0xFFEFF4F9),
       appBar: AppBar(
-        title: Text("Community Complaints",
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-        backgroundColor: Color(0xFF2563EB),
+        title: const Text(
+          "Community Complaints",
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        backgroundColor: const Color(0xFF2563EB),
         centerTitle: true,
         elevation: 4,
       ),
@@ -76,13 +79,13 @@ class _ComplaintlistState extends State<Complaintlist> {
         stream: _firestore.collection('complaints').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           final complaints = snapshot.data!.docs;
 
           return ListView.builder(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             itemCount: complaints.length,
             itemBuilder: (context, index) {
               final complaint = complaints[index];
@@ -93,12 +96,13 @@ class _ComplaintlistState extends State<Complaintlist> {
               final category = data['complaint_category'] ?? 'Unknown';
               final upvotes = (data['upvote'] ?? 0) as int;
               final downvotes = (data['downvote'] ?? 0) as int;
+              final isSolved = data['solved'] ?? false;
 
               final hasUpvoted = upvotedDocs[docId] ?? false;
               final hasDownvoted = downvotedDocs[docId] ?? false;
 
               return Container(
-                margin: EdgeInsets.only(bottom: 16),
+                margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
@@ -106,78 +110,127 @@ class _ComplaintlistState extends State<Complaintlist> {
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.15),
                       blurRadius: 8,
-                      offset: Offset(0, 4),
+                      offset: const Offset(0, 4),
                     ),
                   ],
                 ),
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       complaintText,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         color: Colors.black87,
                       ),
                     ),
-                    SizedBox(height: 6),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: Color(0xFFE0F2FE),
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Text(
-                        category,
-                        style: TextStyle(fontSize: 13, color: Color(0xFF2563EB)),
-                      ),
+                    const SizedBox(height: 6),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFE0F2FE),
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: Text(
+                            category,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: Color(0xFF2563EB),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color:
+                                isSolved
+                                    ? Colors.green.withOpacity(0.1)
+                                    : Colors.red.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: isSolved ? Colors.green : Colors.red,
+                            ),
+                          ),
+                          child: Text(
+                            isSolved ? 'Solved' : 'Pending',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: isSolved ? Colors.green : Colors.red,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 12),
+                    const SizedBox(height: 12),
                     Row(
                       children: [
                         GestureDetector(
                           onTap: () => updateVote(docId, true),
                           child: AnimatedContainer(
-                            duration: Duration(milliseconds: 250),
-                            padding: EdgeInsets.all(6),
+                            duration: const Duration(milliseconds: 250),
+                            padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: hasUpvoted
-                                  ? Colors.green.withOpacity(0.15)
-                                  : Colors.grey.withOpacity(0.08),
+                              color:
+                                  hasUpvoted
+                                      ? Colors.green.withOpacity(0.15)
+                                      : Colors.grey.withOpacity(0.08),
                             ),
-                            child: Icon(Icons.thumb_up,
-                                size: 20,
-                                color: hasUpvoted ? Colors.green : Colors.grey),
+                            child: Icon(
+                              Icons.thumb_up,
+                              size: 20,
+                              color: hasUpvoted ? Colors.green : Colors.grey,
+                            ),
                           ),
                         ),
-                        SizedBox(width: 6),
-                        Text("$upvotes",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500, fontSize: 14)),
-                        SizedBox(width: 18),
+                        const SizedBox(width: 6),
+                        Text(
+                          "$upvotes",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(width: 18),
                         GestureDetector(
                           onTap: () => updateVote(docId, false),
                           child: AnimatedContainer(
-                            duration: Duration(milliseconds: 250),
-                            padding: EdgeInsets.all(6),
+                            duration: const Duration(milliseconds: 250),
+                            padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: hasDownvoted
-                                  ? Colors.red.withOpacity(0.15)
-                                  : Colors.grey.withOpacity(0.08),
+                              color:
+                                  hasDownvoted
+                                      ? Colors.red.withOpacity(0.15)
+                                      : Colors.grey.withOpacity(0.08),
                             ),
-                            child: Icon(Icons.thumb_down,
-                                size: 20,
-                                color: hasDownvoted ? Colors.red : Colors.grey),
+                            child: Icon(
+                              Icons.thumb_down,
+                              size: 20,
+                              color: hasDownvoted ? Colors.red : Colors.grey,
+                            ),
                           ),
                         ),
-                        SizedBox(width: 6),
-                        Text("$downvotes",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500, fontSize: 14)),
+                        const SizedBox(width: 6),
+                        Text(
+                          "$downvotes",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                          ),
+                        ),
                       ],
                     ),
                   ],

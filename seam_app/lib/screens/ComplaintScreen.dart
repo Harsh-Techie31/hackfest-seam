@@ -28,7 +28,7 @@ Future<void> _submitComplaint() async {
           'complaint_category':selectedCategory,
           'upvote':0,
           'downvote':0,
-          'status':'Unsolved',
+          'solved':false,
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Feedback submitted successfully!')),
@@ -45,7 +45,7 @@ Future<void> _submitComplaint() async {
 
  @override
 Widget build(BuildContext context) {
-  final theme = Theme.of(context);
+  // final theme = Theme.of(context);
   return Scaffold(
     appBar: AppBar(
       title: Text(
