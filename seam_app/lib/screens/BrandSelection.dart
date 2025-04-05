@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:seam_app/screens/MenuScreen.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:seam_app/screens/home_screen.dart';
 
 class BrandSelectionScreen extends StatefulWidget {
   const BrandSelectionScreen({super.key});
@@ -172,7 +173,7 @@ class _BrandSelectionScreenState extends State<BrandSelectionScreen> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: textColor),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeScreen())),
         ),
         actions: [
           IconButton(

@@ -2,6 +2,7 @@
 // import 'package:feedback_app/Screens/PaymentDone.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:seam_app/screens/PaymentDone.dart';
 // import 'package:slider_button/slider_button.dart';
 
 class MenuScreen extends StatefulWidget {
@@ -465,7 +466,7 @@ class _MenuScreenState extends State<MenuScreen> {
                 ElevatedButton(
                   onPressed: () {
                     // Handle checkout
-                    Navigator.pop(context);
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>PaymentSuccessScreen()));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: accentColor,

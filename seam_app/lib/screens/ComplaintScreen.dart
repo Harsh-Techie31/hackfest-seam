@@ -122,7 +122,7 @@ Widget build(BuildContext context) {
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: _submitComplaint,
-                      icon: Icon(Icons.send),
+                      //icon: Icon(Icons.send_rounded),
                       label: Text("Submit Complaint",style: TextStyle(color: Colors.black87),),
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(vertical: 14),
@@ -136,14 +136,14 @@ Widget build(BuildContext context) {
                 ],
               ),
             ),
-            SizedBox(height: 30),
+            SizedBox(height: 40),
             InkWell(
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => Complaintlist()),
               ),
               child: Text(
-                "👀 View live complaints and their status",
+                "Track Your Complaint Status",
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.indigo,

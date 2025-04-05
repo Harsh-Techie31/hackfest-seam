@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:seam_app/screens/BrandSelection.dart';
+import 'package:seam_app/screens/ComplaintScreen.dart';
 import 'package:seam_app/screens/FeedbackScreen.dart';
 import 'chatbot_screen.dart';
 
@@ -57,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen>
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text(
-          "Event App",
+          "EventGaurdian",
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
             color: textColor,
@@ -870,33 +871,37 @@ class _HomeScreenState extends State<HomeScreen>
   //   );
   // }
 
-  void _showComplaintDialog() {
-    showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text('Submit a Complaint'),
-            content: TextField(
-              maxLines: 3,
-              decoration: InputDecoration(
-                hintText: 'Enter your complaint here...',
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  // TODO: Implement complaint submission
-                  Navigator.pop(context);
-                },
-                child: Text('Submit'),
-              ),
-            ],
-          ),
-    );
+  // void _showComplaintDialog() {
+  //   showDialog(
+  //     context: context,
+  //     builder:
+  //         (context) => AlertDialog(
+  //           title: Text('Submit a Complaint'),
+  //           content: TextField(
+  //             maxLines: 3,
+  //             decoration: InputDecoration(
+  //               hintText: 'Enter your complaint here...',
+  //             ),
+  //           ),
+  //           actions: [
+  //             TextButton(
+  //               onPressed: () => Navigator.pop(context),
+  //               child: Text('Cancel'),
+  //             ),
+  //             ElevatedButton(
+  //               onPressed: () {
+  //                 // TODO: Implement complaint submission
+  //                 Navigator.pop(context);
+  //               },
+  //               child: Text('Submit'),
+  //             ),
+  //           ],
+  //         ),
+  //   );
+  // }
+
+  void _showComplaintDialog(){
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>ComplaintScreen()));
   }
 
   void _showLostItemsDialog() {
