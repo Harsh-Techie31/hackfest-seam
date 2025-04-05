@@ -4,6 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:seam_app/screens/BrandSelection.dart';
 import 'package:seam_app/screens/ComplaintScreen.dart';
 import 'package:seam_app/screens/FeedbackScreen.dart';
+import 'package:seam_app/screens/LostScreen.dart';
 import 'chatbot_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -905,38 +906,7 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   void _showLostItemsDialog() {
-    showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text('Report Lost Item'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  decoration: InputDecoration(hintText: 'Item Description'),
-                ),
-                SizedBox(height: 16),
-                TextField(
-                  decoration: InputDecoration(hintText: 'Last Known Location'),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  // TODO: Implement lost item report
-                  Navigator.pop(context);
-                },
-                child: Text('Submit'),
-              ),
-            ],
-          ),
-    );
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>LostAndFoundScreen()));
   }
 
   void _showPremiumDialog() {
