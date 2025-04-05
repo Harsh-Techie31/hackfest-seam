@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
@@ -15,7 +16,9 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final FirebaseDatabase _database = FirebaseDatabase.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final ScrollController _scrollController = ScrollController();
+  String? _userName;
   
   // Modern color scheme
   final Color primaryColor = Color(0xFF2D3142);
@@ -27,6 +30,32 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
   final Color dividerColor = Color(0xFFE5E9F2);
   final Color myMessageColor = Color(0xFF4F6AF0);
   final Color otherMessageColor = Color(0xFFF0F2F5);
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserName();
+  }
+
+  Future<void> _fetchUserName() async {
+    final user = _auth.currentUser;
+    if (user != null && user.email != null) {
+      try {
+        final docSnapshot = await _firestore
+            .collection('attendees')
+            .where('email', isEqualTo: user.email)
+            .get();
+        
+        if (docSnapshot.docs.isNotEmpty) {
+          setState(() {
+            _userName = docSnapshot.docs.first.data()['name'] as String?;
+          });
+        }
+      } catch (e) {
+        print('Error fetching user name: $e');
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -47,7 +76,7 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
     messageRef.set({
       'text': _messageController.text.trim(),
       'senderId': user.uid,
-      'senderName': user.displayName ?? 'Anonymous',
+      'senderName': _userName ?? 'Anonymous',
       'senderEmail': user.email,
       'timestamp': timestamp,
     });

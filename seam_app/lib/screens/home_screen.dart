@@ -88,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen>
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text(
-          "EventGuardian",
+          "EventGaurdian",
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
             color: textColor,
@@ -160,18 +160,20 @@ class _HomeScreenState extends State<HomeScreen>
           onTap: _onItemTapped,
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: accentColor,
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            builder: (context) => const ChatbotScreen(),
-          );
-        },
-        child: Icon(Icons.chat_bubble_outline, color: Colors.white),
-      ),
+      floatingActionButton: _selectedIndex == 0
+          ? FloatingActionButton(
+              backgroundColor: accentColor,
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  builder: (context) => const ChatbotScreen(),
+                );
+              },
+              child: Icon(Icons.chat_bubble_outline, color: Colors.white),
+            )
+          : null,
     );
   }
 
