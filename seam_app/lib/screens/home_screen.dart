@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:seam_app/screens/BrandSelection.dart';
 import 'chatbot_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -10,10 +11,11 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   int _selectedIndex = 0;
-  
+
   // Modern color scheme
   final Color primaryColor = Color(0xFF2D3142);
   final Color accentColor = Color(0xFF4F6AF0);
@@ -39,6 +41,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     setState(() {
       _selectedIndex = index;
       _tabController.animateTo(index);
+      if (index == 2) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => BrandSelectionScreen()),
+        );
+      }
     });
   }
 
@@ -70,16 +78,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       ),
       drawer: _buildDrawer(),
       body: Container(
-        decoration: BoxDecoration(
-          color: backgroundColor,
-        ),
+        decoration: BoxDecoration(color: backgroundColor),
         child: TabBarView(
           controller: _tabController,
-          children: [
-            _buildHomeTab(),
-            _buildChatTab(),
-            _buildFoodTab(),
-          ],
+          children: [_buildHomeTab(), _buildChatTab(), _buildFoodTab()],
         ),
       ),
       bottomNavigationBar: Container(
@@ -140,9 +142,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
-            decoration: BoxDecoration(
-              color: primaryColor,
-            ),
+            decoration: BoxDecoration(color: primaryColor),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -171,9 +171,17 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             ),
           ),
           _buildDrawerItem(Icons.feedback, 'Feedback', _showFeedbackDialog),
-          _buildDrawerItem(Icons.report_problem, 'Complaints', _showComplaintDialog),
+          _buildDrawerItem(
+            Icons.report_problem,
+            'Complaints',
+            _showComplaintDialog,
+          ),
           _buildDrawerItem(Icons.search, 'Lost Items', _showLostItemsDialog),
-          _buildDrawerItem(Icons.star, 'Premium Membership', _showPremiumDialog),
+          _buildDrawerItem(
+            Icons.star,
+            'Premium Membership',
+            _showPremiumDialog,
+          ),
           Divider(),
           _buildDrawerItem(Icons.logout, 'Logout', () {
             Navigator.pop(context);
@@ -188,9 +196,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       leading: Icon(icon, color: primaryColor),
       title: Text(
         title,
-        style: GoogleFonts.poppins(
-          fontWeight: FontWeight.w500,
-        ),
+        style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
       ),
       onTap: onTap,
     );
@@ -242,10 +248,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         children: [
           Text(
             'Welcome to',
-            style: GoogleFonts.poppins(
-              color: textLightColor,
-              fontSize: 16,
-            ),
+            style: GoogleFonts.poppins(color: textLightColor, fontSize: 16),
           ),
           SizedBox(height: 8),
           Text(
@@ -263,10 +266,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               SizedBox(width: 8),
               Text(
                 'March 15-17, 2024',
-                style: GoogleFonts.poppins(
-                  color: textColor,
-                  fontSize: 14,
-                ),
+                style: GoogleFonts.poppins(color: textColor, fontSize: 14),
               ),
             ],
           ),
@@ -332,7 +332,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     );
   }
 
-  Widget _buildEventCard(String title, String time, String location, IconData icon, Color color) {
+  Widget _buildEventCard(
+    String title,
+    String time,
+    String location,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
       width: 280,
       margin: EdgeInsets.only(right: 16),
@@ -352,11 +358,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           Positioned(
             right: -20,
             top: -20,
-            child: Icon(
-              icon,
-              size: 100,
-              color: color.withOpacity(0.1),
-            ),
+            child: Icon(icon, size: 100, color: color.withOpacity(0.1)),
           ),
           Padding(
             padding: EdgeInsets.all(20),
@@ -476,9 +478,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   }) {
     return Card(
       elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       color: cardColor,
       child: InkWell(
         onTap: onTap,
@@ -487,19 +487,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: dividerColor,
-              width: 1,
-            ),
+            border: Border.all(color: dividerColor, width: 1),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                color: accentColor,
-                size: 32,
-              ),
+              Icon(icon, color: accentColor, size: 32),
               SizedBox(height: 12),
               Text(
                 title,
@@ -520,9 +513,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   Widget _buildEventInfo() {
     return Card(
       elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       color: cardColor,
       margin: EdgeInsets.symmetric(horizontal: 16),
       child: Padding(
@@ -563,12 +554,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               color: textColor,
             ),
           ),
-          Text(
-            value,
-            style: GoogleFonts.poppins(
-              color: textLightColor,
-            ),
-          ),
+          Text(value, style: GoogleFonts.poppins(color: textLightColor)),
         ],
       ),
     );
@@ -608,9 +594,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   Widget _buildAnnouncementCard(String title, String message, DateTime time) {
     return Card(
       elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       color: cardColor,
       margin: EdgeInsets.symmetric(horizontal: 16),
       child: Padding(
@@ -627,19 +611,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               ),
             ),
             SizedBox(height: 8),
-            Text(
-              message,
-              style: GoogleFonts.poppins(
-                color: textLightColor,
-              ),
-            ),
+            Text(message, style: GoogleFonts.poppins(color: textLightColor)),
             SizedBox(height: 8),
             Text(
               '${time.hour}:${time.minute}',
-              style: GoogleFonts.poppins(
-                color: textLightColor,
-                fontSize: 12,
-              ),
+              style: GoogleFonts.poppins(color: textLightColor, fontSize: 12),
             ),
           ],
         ),
@@ -678,7 +654,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           ),
           child: Column(
             children: [
-              _buildScheduleItem('9:00 AM', 'Registration & Breakfast', 'Main Hall'),
+              _buildScheduleItem(
+                '9:00 AM',
+                'Registration & Breakfast',
+                'Main Hall',
+              ),
               _buildScheduleDivider(),
               _buildScheduleItem('10:00 AM', 'Opening Ceremony', 'Main Hall'),
               _buildScheduleDivider(),
@@ -686,7 +666,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               _buildScheduleDivider(),
               _buildScheduleItem('1:00 PM', 'Lunch Break', 'Dining Hall'),
               _buildScheduleDivider(),
-              _buildScheduleItem('2:30 PM', 'Workshop Sessions', 'Various Rooms'),
+              _buildScheduleItem(
+                '2:30 PM',
+                'Workshop Sessions',
+                'Various Rooms',
+              ),
               _buildScheduleDivider(),
               _buildScheduleItem('4:00 PM', 'Networking Session', 'Lounge'),
               _buildScheduleDivider(),
@@ -707,10 +691,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             width: 80,
             child: Text(
               time,
-              style: GoogleFonts.poppins(
-                color: textLightColor,
-                fontSize: 14,
-              ),
+              style: GoogleFonts.poppins(color: textLightColor, fontSize: 14),
             ),
           ),
           Expanded(
@@ -742,10 +723,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   }
 
   Widget _buildScheduleDivider() {
-    return Divider(
-      color: dividerColor,
-      height: 1,
-    );
+    return Divider(color: dividerColor, height: 1);
   }
 
   Widget _buildSpeakers() {
@@ -833,10 +811,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           SizedBox(height: 4),
           Text(
             topic,
-            style: GoogleFonts.poppins(
-              color: textLightColor,
-              fontSize: 12,
-            ),
+            style: GoogleFonts.poppins(color: textLightColor, fontSize: 12),
             textAlign: TextAlign.center,
           ),
         ],
@@ -865,126 +840,126 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   void _showFeedbackDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Submit Feedback'),
-        content: TextField(
-          maxLines: 3,
-          decoration: InputDecoration(
-            hintText: 'Enter your feedback here...',
+      builder:
+          (context) => AlertDialog(
+            title: Text('Submit Feedback'),
+            content: TextField(
+              maxLines: 3,
+              decoration: InputDecoration(
+                hintText: 'Enter your feedback here...',
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  // TODO: Implement feedback submission
+                  Navigator.pop(context);
+                },
+                child: Text('Submit'),
+              ),
+            ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              // TODO: Implement feedback submission
-              Navigator.pop(context);
-            },
-            child: Text('Submit'),
-          ),
-        ],
-      ),
     );
   }
 
   void _showComplaintDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Submit a Complaint'),
-        content: TextField(
-          maxLines: 3,
-          decoration: InputDecoration(
-            hintText: 'Enter your complaint here...',
+      builder:
+          (context) => AlertDialog(
+            title: Text('Submit a Complaint'),
+            content: TextField(
+              maxLines: 3,
+              decoration: InputDecoration(
+                hintText: 'Enter your complaint here...',
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  // TODO: Implement complaint submission
+                  Navigator.pop(context);
+                },
+                child: Text('Submit'),
+              ),
+            ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              // TODO: Implement complaint submission
-              Navigator.pop(context);
-            },
-            child: Text('Submit'),
-          ),
-        ],
-      ),
     );
   }
 
   void _showLostItemsDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Report Lost Item'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'Item Description',
-              ),
+      builder:
+          (context) => AlertDialog(
+            title: Text('Report Lost Item'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  decoration: InputDecoration(hintText: 'Item Description'),
+                ),
+                SizedBox(height: 16),
+                TextField(
+                  decoration: InputDecoration(hintText: 'Last Known Location'),
+                ),
+              ],
             ),
-            SizedBox(height: 16),
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'Last Known Location',
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel'),
               ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
+              ElevatedButton(
+                onPressed: () {
+                  // TODO: Implement lost item report
+                  Navigator.pop(context);
+                },
+                child: Text('Submit'),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              // TODO: Implement lost item report
-              Navigator.pop(context);
-            },
-            child: Text('Submit'),
-          ),
-        ],
-      ),
     );
   }
 
   void _showPremiumDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Premium Membership'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Get access to exclusive features:'),
-            SizedBox(height: 16),
-            _buildPremiumFeature(Icons.fastfood, 'Priority Food Ordering'),
-            _buildPremiumFeature(Icons.chat, 'Direct Support Chat'),
-            _buildPremiumFeature(Icons.star, 'Exclusive Event Updates'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Maybe Later'),
+      builder:
+          (context) => AlertDialog(
+            title: Text('Premium Membership'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('Get access to exclusive features:'),
+                SizedBox(height: 16),
+                _buildPremiumFeature(Icons.fastfood, 'Priority Food Ordering'),
+                _buildPremiumFeature(Icons.chat, 'Direct Support Chat'),
+                _buildPremiumFeature(Icons.star, 'Exclusive Event Updates'),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Maybe Later'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  // TODO: Implement premium membership purchase
+                  Navigator.pop(context);
+                },
+                child: Text('Upgrade Now'),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              // TODO: Implement premium membership purchase
-              Navigator.pop(context);
-            },
-            child: Text('Upgrade Now'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -1000,4 +975,4 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       ),
     );
   }
-} 
+}
