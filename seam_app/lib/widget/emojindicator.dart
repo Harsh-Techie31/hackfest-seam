@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class EmojiExpressionMeter extends StatefulWidget {
   final int score; // 0 to 100
@@ -40,13 +41,13 @@ class _EmojiExpressionMeterState extends State<EmojiExpressionMeter>
     }
   }
 
-  String getEmojiForScore(int score) {
-    if (score >= 90) return "🥳";
-    if (score >= 70) return "😄";
-    if (score >= 50) return "😐";
-    if (score >= 30) return "😟";
-    if (score >= 10) return "😠";
-    return "💀";
+  String getLottiePathForScore(int score) {
+    if (score >= 80) return 'seam_app/assets/lottie/party.json';         // 🥳
+    if (score >= 60) return 'assets/lottie/happy.json';         // 😄
+    if (score >= 40) return 'assets/lottie/neutral.json';       // 😐
+    if (score >= 20) return 'assets/lottie/sad.json';           // 😟
+    return 'assets/lottie/angry.json';         // 😠
+    // return 'assets/lottie/dead.json';                           // 💀
   }
 
   Color getColorForScore(int score) {
@@ -60,7 +61,7 @@ class _EmojiExpressionMeterState extends State<EmojiExpressionMeter>
 
   @override
   Widget build(BuildContext context) {
-    final emoji = getEmojiForScore(widget.score);
+    final lottiePath = getLottiePathForScore(widget.score);
     final color = getColorForScore(widget.score);
 
     return Column(
@@ -68,12 +69,13 @@ class _EmojiExpressionMeterState extends State<EmojiExpressionMeter>
       children: [
         ScaleTransition(
           scale: _scaleAnimation,
-          child: Text(
-            emoji,
-            style: TextStyle(fontSize: 64),
+          child: SizedBox(
+            height: 120,
+            width: 120,
+            child: Lottie.asset(lottiePath, fit: BoxFit.contain),
           ),
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         Text(
           "Audience Score: ${widget.score}/100",
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color),

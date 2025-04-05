@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:seam_app/services/firestore_service.dart';
 import 'package:seam_app/models/attendee-model.dart';
+import 'package:seam_app/widget/emojindicator.dart';
 import 'chatbot_screen.dart';
 import 'LiveChatScreen.dart';
 
@@ -26,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen>
   TicketInfo? _attendeeData;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirestoreService _firestoreService = FirestoreService();
+  int audienceScore = 50; // starting score
 
   // Modern color scheme
   final Color primaryColor = Color(0xFF2D3142);
@@ -51,7 +53,9 @@ class _HomeScreenState extends State<HomeScreen>
     try {
       final user = _auth.currentUser;
       if (user != null) {
-        final attendeeData = await _firestoreService.getAttendeeData(user.email!);
+        final attendeeData = await _firestoreService.getAttendeeData(
+          user.email!,
+        );
         setState(() {
           _attendeeData = attendeeData;
           _isLoading = false;
@@ -109,20 +113,18 @@ class _HomeScreenState extends State<HomeScreen>
         ],
       ),
       drawer: _buildDrawer(),
-      body: _isLoading
-          ? Center(
-              child: SpinKitDoubleBounce(
-                color: accentColor,
-                size: 50.0,
+      body:
+          _isLoading
+              ? Center(
+                child: SpinKitDoubleBounce(color: accentColor, size: 50.0),
+              )
+              : Container(
+                decoration: BoxDecoration(color: backgroundColor),
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [_buildHomeTab(), _buildChatTab(), _buildFoodTab()],
+                ),
               ),
-            )
-          : Container(
-              decoration: BoxDecoration(color: backgroundColor),
-              child: TabBarView(
-                controller: _tabController,
-                children: [_buildHomeTab(), _buildChatTab(), _buildFoodTab()],
-              ),
-            ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: cardColor,
@@ -160,20 +162,21 @@ class _HomeScreenState extends State<HomeScreen>
           onTap: _onItemTapped,
         ),
       ),
-      floatingActionButton: _selectedIndex == 0
-          ? FloatingActionButton(
-              backgroundColor: accentColor,
-              onPressed: () {
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  backgroundColor: Colors.transparent,
-                  builder: (context) => const ChatbotScreen(),
-                );
-              },
-              child: Icon(Icons.chat_bubble_outline, color: Colors.white),
-            )
-          : null,
+      floatingActionButton:
+          _selectedIndex == 0
+              ? FloatingActionButton(
+                backgroundColor: accentColor,
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) => const ChatbotScreen(),
+                  );
+                },
+                child: Icon(Icons.chat_bubble_outline, color: Colors.white),
+              )
+              : null,
     );
   }
 
@@ -258,7 +261,38 @@ class _HomeScreenState extends State<HomeScreen>
           _buildHeroSection(),
           SizedBox(height: 24),
           _buildUpcomingEvents(),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //     children: [
+          //       Expanded(child: EmojiExpressionMeter(score: audienceScore)),
+          //       Column(
+          //         children: [
+          //           ElevatedButton(
+          //             onPressed: () {
+          //               setState(() {
+          //                 audienceScore = (audienceScore + 20).clamp(0, 100);
+          //               });
+          //             },
+          //             style: ElevatedButton.styleFrom(
+          //               backgroundColor: Colors.indigoAccent,
+          //               shape: RoundedRectangleBorder(
+          //                 borderRadius: BorderRadius.circular(12),
+          //               ),
+          //             ),
+          //             child: const Text(
+          //               '+20',
+          //               style: TextStyle(color: Colors.white),
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //     ],
+          //   ),
+          // ),
           SizedBox(height: 24),
+          // SizedBox(height: 24),
           _buildQuickActions(),
           SizedBox(height: 24),
           _buildEventInfo(),
@@ -503,18 +537,15 @@ class _HomeScreenState extends State<HomeScreen>
               () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => BrandSelectionScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => BrandSelectionScreen(),
+                  ),
                 );
               },
             ),
-            _buildActionCard(
-              'Live Chat',
-              Icons.chat,
-              Color(0xFFFF9800),
-              () {
-                // TODO: Implement live chat
-              },
-            ),
+            _buildActionCard('Live Chat', Icons.chat, Color(0xFFFF9800), () {
+              // TODO: Implement live chat
+            }),
           ],
         ),
       ],
@@ -581,12 +612,28 @@ class _HomeScreenState extends State<HomeScreen>
               ),
             ),
             SizedBox(height: 16),
-            _buildInfoRow(Icons.calendar_today, 'Date', _attendeeData?.eventDateTime ?? 'Not specified'),
+            _buildInfoRow(
+              Icons.calendar_today,
+              'Date',
+              _attendeeData?.eventDateTime ?? 'Not specified',
+            ),
             _buildInfoRow(Icons.access_time, 'Time', '10:00 AM - 6:00 PM'),
             _buildInfoRow(Icons.location_on, 'Venue', 'Convention Center'),
-            _buildInfoRow(Icons.confirmation_number, 'Ticket', _attendeeData?.ticketId ?? 'Not specified'),
-            _buildInfoRow(Icons.chair, 'Seat', _attendeeData?.seatNumber ?? 'Not specified'),
-            _buildInfoRow(Icons.door_front_door, 'Entrance', _attendeeData?.entranceGate ?? 'Not specified'),
+            _buildInfoRow(
+              Icons.confirmation_number,
+              'Ticket',
+              _attendeeData?.ticketId ?? 'Not specified',
+            ),
+            _buildInfoRow(
+              Icons.chair,
+              'Seat',
+              _attendeeData?.seatNumber ?? 'Not specified',
+            ),
+            _buildInfoRow(
+              Icons.door_front_door,
+              'Entrance',
+              _attendeeData?.entranceGate ?? 'Not specified',
+            ),
           ],
         ),
       ),
