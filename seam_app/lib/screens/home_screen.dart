@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:seam_app/screens/BrandSelection.dart';
+import 'package:seam_app/screens/FeedbackScreen.dart';
 import 'chatbot_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -838,33 +839,36 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   void _showFeedbackDialog() {
-    showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text('Submit Feedback'),
-            content: TextField(
-              maxLines: 3,
-              decoration: InputDecoration(
-                hintText: 'Enter your feedback here...',
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  // TODO: Implement feedback submission
-                  Navigator.pop(context);
-                },
-                child: Text('Submit'),
-              ),
-            ],
-          ),
-    );
+    Navigator.push(context, MaterialPageRoute(builder: (context)=> Feedbackscreen()));
   }
+  // void _showFeedbackDialog() {
+  //   showDialog(
+  //     context: context,
+  //     builder:
+  //         (context) => AlertDialog(
+  //           title: Text('Submit Feedback'),
+  //           content: TextField(
+  //             maxLines: 3,
+  //             decoration: InputDecoration(
+  //               hintText: 'Enter your feedback here...',
+  //             ),
+  //           ),
+  //           actions: [
+  //             TextButton(
+  //               onPressed: () => Navigator.pop(context),
+  //               child: Text('Cancel'),
+  //             ),
+  //             ElevatedButton(
+  //               onPressed: () {
+  //                 // TODO: Implement feedback submission
+  //                 Navigator.pop(context);
+  //               },
+  //               child: Text('Submit'),
+  //             ),
+  //           ],
+  //         ),
+  //   );
+  // }
 
   void _showComplaintDialog() {
     showDialog(
