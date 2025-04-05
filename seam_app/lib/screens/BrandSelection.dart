@@ -1,5 +1,6 @@
-import 'package:feedback_app/Screens/MenuScreen.dart';
+
 import 'package:flutter/material.dart';
+import 'package:seam_app/screens/MenuScreen.dart';
 
 class BrandSelectionScreen extends StatefulWidget {
   const BrandSelectionScreen({super.key});

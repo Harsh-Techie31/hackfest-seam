@@ -1,5 +1,4 @@
-import 'package:feedback_app/Screens/FeedbackScreen.dart';
-import 'package:feedback_app/Screens/PaymentDone.dart';
+
 import 'package:flutter/material.dart';
 // import 'package:slider_button/slider_button.dart';
 

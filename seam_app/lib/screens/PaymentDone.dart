@@ -1,6 +1,8 @@
-import 'package:feedback_app/Screens/BrandSelection.dart';
+
 import 'package:flutter/material.dart';
 import 'dart:async';
+
+import 'package:seam_app/screens/BrandSelection.dart';
 
 class PaymentSuccessScreen extends StatefulWidget {
   @override

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:feedback_app/Screens/ComplaintList.dart';
 import 'package:flutter/material.dart';
+import 'package:seam_app/screens/ComplaintList.dart';
 
 class ComplaintScreen extends StatefulWidget {
   const ComplaintScreen({super.key});
