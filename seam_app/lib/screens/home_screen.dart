@@ -544,7 +544,12 @@ class _HomeScreenState extends State<HomeScreen>
               },
             ),
             _buildActionCard('Live Chat', Icons.chat, Color(0xFFFF9800), () {
-              // TODO: Implement live chat
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LiveChatScreen(),
+                  ),
+                );
             }),
           ],
         ),
