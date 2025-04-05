@@ -51,7 +51,7 @@ class _BrandSelectionScreenState extends State<BrandSelectionScreen> {
     },
     {
       'name': 'McDonald\'s',
-      'logo': 'assets/brands/mcdonald.jpg',
+      'logo': 'assets/brands/mcd.png',
       'rating': 4.3,
       'deliveryTime': '25-35 min',
       'cuisine': 'Fast Food',
@@ -70,90 +70,7 @@ class _BrandSelectionScreenState extends State<BrandSelectionScreen> {
         },
       ],
     },
-    {
-      'name': 'Burger King',
-      'logo': 'assets/brands/burgerking.png',
-      'rating': 4.2,
-      'deliveryTime': '30-40 min',
-      'cuisine': 'Fast Food',
-      'menuItems': [
-        {
-          'name': 'Whopper',
-          'price': 279.00,
-          'image': 'assets/menu_items/bk_burger.jpg',
-          'description': 'Flame-grilled beef patty with tomatoes, lettuce, mayo, pickles, and onions',
-        },
-        {
-          'name': 'Chicken Royale',
-          'price': 229.00,
-          'image': 'assets/menu_items/bk_fries.jpg',
-          'description': 'Crispy chicken with lettuce and mayo in a sesame seed bun',
-        },
-      ],
-    },
-    {
-      'name': 'Pizza Hut',
-      'logo': 'assets/brands/pizzahut.png',
-      'rating': 4.4,
-      'deliveryTime': '35-45 min',
-      'cuisine': 'Pizza',
-      'menuItems': [
-        {
-          'name': 'Margherita Pizza',
-          'price': 299.00,
-          'image': 'assets/menu_items/ph_pizza.jpg',
-          'description': 'Classic pizza with tomato sauce, mozzarella cheese, and basil',
-        },
-        {
-          'name': 'Pepperoni Pizza',
-          'price': 349.00,
-          'image': 'assets/menu_items/ph_pepperoni.jpg',
-          'description': 'Loaded with pepperoni, cheese, and our signature sauce',
-        },
-      ],
-    },
-    {
-      'name': 'Subway',
-      'logo': 'assets/brands/subway.png',
-      'rating': 4.1,
-      'deliveryTime': '25-35 min',
-      'cuisine': 'Sandwiches',
-      'menuItems': [
-        {
-          'name': 'Veggie Delite',
-          'price': 199.00,
-          'image': 'assets/menu_items/sub_veggie.jpg',
-          'description': 'Fresh vegetables with your choice of bread and sauces',
-        },
-        {
-          'name': 'Chicken Teriyaki',
-          'price': 249.00,
-          'image': 'assets/menu_items/sub_chicken.jpg',
-          'description': 'Grilled chicken with teriyaki sauce and fresh vegetables',
-        },
-      ],
-    },
-    {
-      'name': 'Domino\'s',
-      'logo': 'assets/brands/dominos.png',
-      'rating': 4.3,
-      'deliveryTime': '30-40 min',
-      'cuisine': 'Pizza',
-      'menuItems': [
-        {
-          'name': 'Farmhouse Pizza',
-          'price': 399.00,
-          'image': 'assets/menu_items/dom_pizza.jpg',
-          'description': 'Loaded with mushrooms, capsicum, onions, and tomatoes',
-        },
-        {
-          'name': 'Chicken Golden Delight',
-          'price': 449.00,
-          'image': 'assets/menu_items/dom_chicken.jpg',
-          'description': 'Grilled chicken with black olives and red paprika',
-        },
-      ],
-    },
+  
   ];
 
   @override

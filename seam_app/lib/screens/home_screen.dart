@@ -4,8 +4,16 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:seam_app/screens/BrandSelection.dart';
 import 'package:seam_app/screens/ComplaintScreen.dart';
 import 'package:seam_app/screens/FeedbackScreen.dart';
+<<<<<<< HEAD
 import 'package:seam_app/screens/LostScreen.dart';
+=======
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:seam_app/services/firestore_service.dart';
+import 'package:seam_app/models/attendee-model.dart';
+>>>>>>> c6bf831d9a0c93b91c825f78dd6ce787901eaf66
 import 'chatbot_screen.dart';
+import 'LiveChatScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,6 +26,10 @@ class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   int _selectedIndex = 0;
+  bool _isLoading = true;
+  TicketInfo? _attendeeData;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirestoreService _firestoreService = FirestoreService();
 
   // Modern color scheme
   final Color primaryColor = Color(0xFF2D3142);
@@ -32,6 +44,33 @@ class _HomeScreenState extends State<HomeScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _loadAttendeeData();
+  }
+
+  Future<void> _loadAttendeeData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        final attendeeData = await _firestoreService.getAttendeeData(user.email!);
+        setState(() {
+          _attendeeData = attendeeData;
+          _isLoading = false;
+        });
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Error loading attendee data: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -44,12 +83,6 @@ class _HomeScreenState extends State<HomeScreen>
     setState(() {
       _selectedIndex = index;
       _tabController.animateTo(index);
-      if (index == 2) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => BrandSelectionScreen()),
-        );
-      }
     });
   }
 
@@ -80,13 +113,20 @@ class _HomeScreenState extends State<HomeScreen>
         ],
       ),
       drawer: _buildDrawer(),
-      body: Container(
-        decoration: BoxDecoration(color: backgroundColor),
-        child: TabBarView(
-          controller: _tabController,
-          children: [_buildHomeTab(), _buildChatTab(), _buildFoodTab()],
-        ),
-      ),
+      body: _isLoading
+          ? Center(
+              child: SpinKitDoubleBounce(
+                color: accentColor,
+                size: 50.0,
+              ),
+            )
+          : Container(
+              decoration: BoxDecoration(color: backgroundColor),
+              child: TabBarView(
+                controller: _tabController,
+                children: [_buildHomeTab(), _buildChatTab(), _buildFoodTab()],
+              ),
+            ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: cardColor,
@@ -124,18 +164,20 @@ class _HomeScreenState extends State<HomeScreen>
           onTap: _onItemTapped,
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: accentColor,
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            builder: (context) => const ChatbotScreen(),
-          );
-        },
-        child: Icon(Icons.chat_bubble_outline, color: Colors.white),
-      ),
+      floatingActionButton: _selectedIndex == 0
+          ? FloatingActionButton(
+              backgroundColor: accentColor,
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  builder: (context) => const ChatbotScreen(),
+                );
+              },
+              child: Icon(Icons.chat_bubble_outline, color: Colors.white),
+            )
+          : null,
     );
   }
 
@@ -156,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
                 SizedBox(height: 10),
                 Text(
-                  'John Doe',
+                  _attendeeData?.attendeeName ?? 'Guest User',
                   style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontSize: 18,
@@ -164,7 +206,7 @@ class _HomeScreenState extends State<HomeScreen>
                   ),
                 ),
                 Text(
-                  'john.doe@example.com',
+                  _attendeeData?.email ?? 'guest@example.com',
                   style: GoogleFonts.poppins(
                     color: Colors.white70,
                     fontSize: 14,
@@ -179,14 +221,19 @@ class _HomeScreenState extends State<HomeScreen>
             'Complaints',
             _showComplaintDialog,
           ),
-          _buildDrawerItem(Icons.search, 'Lost Items', _showLostItemsDialog),
-          _buildDrawerItem(
-            Icons.star,
-            'Premium Membership',
-            _showPremiumDialog,
-          ),
+          _buildDrawerItem(Icons.restaurant, 'Order Food', () {
+            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => BrandSelectionScreen()),
+            );
+          }),
+          _buildDrawerItem(Icons.chat, 'Live Chat', () {
+            // TODO: Implement live chat
+          }),
           Divider(),
           _buildDrawerItem(Icons.logout, 'Logout', () {
+            _auth.signOut();
             Navigator.pop(context);
           }),
         ],
@@ -220,12 +267,6 @@ class _HomeScreenState extends State<HomeScreen>
           SizedBox(height: 24),
           _buildEventInfo(),
           SizedBox(height: 24),
-          _buildAnnouncements(),
-          SizedBox(height: 24),
-          _buildSchedule(),
-          SizedBox(height: 24),
-          _buildSpeakers(),
-          SizedBox(height: 24),
         ],
       ),
     );
@@ -255,7 +296,7 @@ class _HomeScreenState extends State<HomeScreen>
           ),
           SizedBox(height: 8),
           Text(
-            'Tech Conference 2024',
+            _attendeeData?.eventName ?? 'Event',
             style: GoogleFonts.poppins(
               color: textColor,
               fontSize: 24,
@@ -268,7 +309,7 @@ class _HomeScreenState extends State<HomeScreen>
               Icon(Icons.calendar_today, color: accentColor, size: 16),
               SizedBox(width: 8),
               Text(
-                'March 15-17, 2024',
+                _attendeeData?.eventDateTime ?? 'Date not specified',
                 style: GoogleFonts.poppins(color: textColor, fontSize: 14),
               ),
             ],
@@ -442,31 +483,41 @@ class _HomeScreenState extends State<HomeScreen>
         GridView.count(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.symmetric(horizontal: 16),
           crossAxisCount: 2,
+          padding: EdgeInsets.symmetric(horizontal: 16),
           mainAxisSpacing: 16,
           crossAxisSpacing: 16,
-          childAspectRatio: 1.1,
           children: [
             _buildActionCard(
-              icon: Icons.feedback,
-              title: 'Feedback',
-              onTap: _showFeedbackDialog,
+              'Submit Feedback',
+              Icons.feedback,
+              accentColor,
+              _showFeedbackDialog,
             ),
             _buildActionCard(
-              icon: Icons.report_problem,
-              title: 'Complaints',
-              onTap: _showComplaintDialog,
+              'File Complaint',
+              Icons.report_problem,
+              Color(0xFFF44336),
+              _showComplaintDialog,
             ),
             _buildActionCard(
-              icon: Icons.search,
-              title: 'Lost Items',
-              onTap: _showLostItemsDialog,
+              'Order Food',
+              Icons.restaurant,
+              Color(0xFF4CAF50),
+              () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => BrandSelectionScreen()),
+                );
+              },
             ),
             _buildActionCard(
-              icon: Icons.star,
-              title: 'Premium',
-              onTap: _showPremiumDialog,
+              'Live Chat',
+              Icons.chat,
+              Color(0xFFFF9800),
+              () {
+                // TODO: Implement live chat
+              },
             ),
           ],
         ),
@@ -474,40 +525,41 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildActionCard({
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      color: cardColor,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          padding: EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: dividerColor, width: 1),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, color: accentColor, size: 32),
-              SizedBox(height: 12),
-              Text(
-                title,
-                style: GoogleFonts.poppins(
-                  color: textColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-                textAlign: TextAlign.center,
+  Widget _buildActionCard(
+    String title,
+    IconData icon,
+    Color color,
+    VoidCallback onTap,
+  ) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: cardColor,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: color, size: 32),
+            SizedBox(height: 8),
+            Text(
+              title,
+              style: GoogleFonts.poppins(
+                color: textColor,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
               ),
-            ],
-          ),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );
@@ -533,10 +585,12 @@ class _HomeScreenState extends State<HomeScreen>
               ),
             ),
             SizedBox(height: 16),
-            _buildInfoRow(Icons.calendar_today, 'Date', 'April 15, 2024'),
+            _buildInfoRow(Icons.calendar_today, 'Date', _attendeeData?.eventDateTime ?? 'Not specified'),
             _buildInfoRow(Icons.access_time, 'Time', '10:00 AM - 6:00 PM'),
             _buildInfoRow(Icons.location_on, 'Venue', 'Convention Center'),
-            _buildInfoRow(Icons.confirmation_number, 'Ticket', '#12345'),
+            _buildInfoRow(Icons.confirmation_number, 'Ticket', _attendeeData?.ticketId ?? 'Not specified'),
+            _buildInfoRow(Icons.chair, 'Seat', _attendeeData?.seatNumber ?? 'Not specified'),
+            _buildInfoRow(Icons.door_front_door, 'Entrance', _attendeeData?.entranceGate ?? 'Not specified'),
           ],
         ),
       ),
@@ -563,284 +617,16 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildAnnouncements() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            'Announcements',
-            style: GoogleFonts.poppins(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: textColor,
-            ),
-          ),
-        ),
-        SizedBox(height: 16),
-        _buildAnnouncementCard(
-          'Welcome to the Event!',
-          'We are excited to have you here. Please check the schedule for today\'s events.',
-          DateTime.now(),
-        ),
-        SizedBox(height: 12),
-        _buildAnnouncementCard(
-          'Lunch Break',
-          'Lunch will be served from 12:00 PM to 1:00 PM in the main hall.',
-          DateTime.now().add(Duration(hours: 2)),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildAnnouncementCard(String title, String message, DateTime time) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      color: cardColor,
-      margin: EdgeInsets.symmetric(horizontal: 16),
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: textColor,
-              ),
-            ),
-            SizedBox(height: 8),
-            Text(message, style: GoogleFonts.poppins(color: textLightColor)),
-            SizedBox(height: 8),
-            Text(
-              '${time.hour}:${time.minute}',
-              style: GoogleFonts.poppins(color: textLightColor, fontSize: 12),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSchedule() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            'Today\'s Schedule',
-            style: GoogleFonts.poppins(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: textColor,
-            ),
-          ),
-        ),
-        SizedBox(height: 16),
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-            color: cardColor,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-                offset: Offset(0, 5),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              _buildScheduleItem(
-                '9:00 AM',
-                'Registration & Breakfast',
-                'Main Hall',
-              ),
-              _buildScheduleDivider(),
-              _buildScheduleItem('10:00 AM', 'Opening Ceremony', 'Main Hall'),
-              _buildScheduleDivider(),
-              _buildScheduleItem('11:30 AM', 'Keynote Speech', 'Main Hall'),
-              _buildScheduleDivider(),
-              _buildScheduleItem('1:00 PM', 'Lunch Break', 'Dining Hall'),
-              _buildScheduleDivider(),
-              _buildScheduleItem(
-                '2:30 PM',
-                'Workshop Sessions',
-                'Various Rooms',
-              ),
-              _buildScheduleDivider(),
-              _buildScheduleItem('4:00 PM', 'Networking Session', 'Lounge'),
-              _buildScheduleDivider(),
-              _buildScheduleItem('5:30 PM', 'Closing Ceremony', 'Main Hall'),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildScheduleItem(String time, String title, String location) {
-    return Padding(
-      padding: EdgeInsets.all(16),
-      child: Row(
-        children: [
-          Container(
-            width: 80,
-            child: Text(
-              time,
-              style: GoogleFonts.poppins(color: textLightColor, fontSize: 14),
-            ),
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: GoogleFonts.poppins(
-                    color: textColor,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                Text(
-                  location,
-                  style: GoogleFonts.poppins(
-                    color: textLightColor,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Icon(Icons.arrow_forward_ios, color: textLightColor, size: 16),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildScheduleDivider() {
-    return Divider(color: dividerColor, height: 1);
-  }
-
-  Widget _buildSpeakers() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            'Featured Speakers',
-            style: GoogleFonts.poppins(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: textColor,
-            ),
-          ),
-        ),
-        SizedBox(height: 16),
-        Container(
-          height: 180,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            children: [
-              _buildSpeakerCard(
-                'Dr. Sarah Johnson',
-                'AI & Machine Learning',
-                'assets/speaker1.jpg',
-              ),
-              _buildSpeakerCard(
-                'John Smith',
-                'Cloud Computing',
-                'assets/speaker2.jpg',
-              ),
-              _buildSpeakerCard(
-                'Emily Brown',
-                'Cybersecurity',
-                'assets/speaker3.jpg',
-              ),
-              _buildSpeakerCard(
-                'Michael Chen',
-                'Blockchain',
-                'assets/speaker4.jpg',
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSpeakerCard(String name, String topic, String imagePath) {
-    return Container(
-      width: 140,
-      margin: EdgeInsets.only(right: 16),
-      decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircleAvatar(
-            radius: 40,
-            backgroundColor: Colors.white,
-            child: Icon(Icons.person, size: 40, color: accentColor),
-          ),
-          SizedBox(height: 12),
-          Text(
-            name,
-            style: GoogleFonts.poppins(
-              color: textColor,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 4),
-          Text(
-            topic,
-            style: GoogleFonts.poppins(color: textLightColor, fontSize: 12),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildChatTab() {
-    return Center(
-      child: Text(
-        'Chat with other attendees',
-        style: GoogleFonts.poppins(fontSize: 16, color: textColor),
-      ),
-    );
+    return LiveChatScreen();
   }
 
   Widget _buildFoodTab() {
-    return Center(
-      child: Text(
-        'Order food and beverages',
-        style: GoogleFonts.poppins(fontSize: 16, color: textColor),
-      ),
-    );
+    return BrandSelectionScreen();
   }
 
   void _showFeedbackDialog() {
+<<<<<<< HEAD
     Navigator.push(context, MaterialPageRoute(builder: (context)=> Feedbackscreen()));
   }
   // void _showFeedbackDialog() {
@@ -907,51 +693,20 @@ class _HomeScreenState extends State<HomeScreen>
 
   void _showLostItemsDialog() {
     Navigator.push(context, MaterialPageRoute(builder: (context)=>LostAndFoundScreen()));
-  }
-
-  void _showPremiumDialog() {
-    showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text('Premium Membership'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text('Get access to exclusive features:'),
-                SizedBox(height: 16),
-                _buildPremiumFeature(Icons.fastfood, 'Priority Food Ordering'),
-                _buildPremiumFeature(Icons.chat, 'Direct Support Chat'),
-                _buildPremiumFeature(Icons.star, 'Exclusive Event Updates'),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('Maybe Later'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  // TODO: Implement premium membership purchase
-                  Navigator.pop(context);
-                },
-                child: Text('Upgrade Now'),
-              ),
-            ],
-          ),
+=======
+    // Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const Feedbackscreen()),
     );
+>>>>>>> c6bf831d9a0c93b91c825f78dd6ce787901eaf66
   }
 
-  Widget _buildPremiumFeature(IconData icon, String text) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        children: [
-          Icon(icon, size: 20, color: accentColor),
-          SizedBox(width: 8),
-          Text(text),
-        ],
-      ),
+  void _showComplaintDialog() {
+    // Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ComplaintScreen()),
     );
   }
 }
