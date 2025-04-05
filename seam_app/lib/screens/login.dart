@@ -8,6 +8,7 @@ import '../services/FetchingData.dart';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
 import '../models/attendee-model.dart';
+import '../screens/home_screen.dart';
 
 class EventLoginScreen extends StatefulWidget {
   const EventLoginScreen({super.key});
@@ -173,7 +174,11 @@ class EventLoginScreenState extends State<EventLoginScreen> {
             ),
           );
 
-          // TODO: Navigate to next screen or handle success case
+          // Navigate to home screen
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+          );
           
         } catch (e) {
           ScaffoldMessenger.of(context).showSnackBar(
