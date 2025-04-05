@@ -13,6 +13,7 @@ import 'package:seam_app/models/attendee-model.dart';
 import 'package:seam_app/widget/emojindicator.dart';
 import 'chatbot_screen.dart';
 import 'LiveChatScreen.dart';
+import 'dart:async';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,6 +31,10 @@ class _HomeScreenState extends State<HomeScreen>
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirestoreService _firestoreService = FirestoreService();
   int audienceScore = 50; // starting score
+  bool _isComplaintButtonDisabled = false;
+  int _remainingCooldownSeconds = 0;
+  Timer? _cooldownTimer;
+  static const int COOLDOWN_SECONDS = 300; // 5 minutes in seconds
 
   // Modern color scheme
   final Color primaryColor = Color(0xFF2D3142);
@@ -78,6 +83,7 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   void dispose() {
     _tabController.dispose();
+    _cooldownTimer?.cancel();
     super.dispose();
   }
 
@@ -86,6 +92,31 @@ class _HomeScreenState extends State<HomeScreen>
       _selectedIndex = index;
       _tabController.animateTo(index);
     });
+  }
+
+  void _startCooldownTimer() {
+    setState(() {
+      _isComplaintButtonDisabled = true;
+      _remainingCooldownSeconds = COOLDOWN_SECONDS;
+    });
+
+    _cooldownTimer?.cancel();
+    _cooldownTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_remainingCooldownSeconds > 0) {
+          _remainingCooldownSeconds--;
+        } else {
+          _isComplaintButtonDisabled = false;
+          timer.cancel();
+        }
+      });
+    });
+  }
+
+  String _formatTime(int seconds) {
+    int minutes = seconds ~/ 60;
+    int remainingSeconds = seconds % 60;
+    return '$minutes:${remainingSeconds.toString().padLeft(2, '0')}';
   }
 
   @override
@@ -564,8 +595,10 @@ class _HomeScreenState extends State<HomeScreen>
     Color color,
     VoidCallback onTap,
   ) {
+    final bool isComplaintCard = title == 'File Complaint';
+    
     return GestureDetector(
-      onTap: onTap,
+      onTap: isComplaintCard && _isComplaintButtonDisabled ? null : onTap,
       child: Container(
         decoration: BoxDecoration(
           color: cardColor,
@@ -581,12 +614,22 @@ class _HomeScreenState extends State<HomeScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: color, size: 32),
+            Icon(
+              icon,
+              color: isComplaintCard && _isComplaintButtonDisabled
+                  ? Colors.grey
+                  : color,
+              size: 32,
+            ),
             SizedBox(height: 8),
             Text(
-              title,
+              isComplaintCard && _isComplaintButtonDisabled
+                  ? 'Wait ${_formatTime(_remainingCooldownSeconds)}'
+                  : title,
               style: GoogleFonts.poppins(
-                color: textColor,
+                color: isComplaintCard && _isComplaintButtonDisabled
+                    ? Colors.grey
+                    : textColor,
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
@@ -683,7 +726,9 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   void _showComplaintDialog() {
-    // Navigator.pop(context);
+    if (_isComplaintButtonDisabled) return;
+    
+    _startCooldownTimer();
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const ComplaintScreen()),
