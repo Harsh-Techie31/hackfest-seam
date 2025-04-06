@@ -293,9 +293,9 @@ class _HomeScreenState extends State<HomeScreen>
           SizedBox(height: 100),
           _buildHeroSection(),
           SizedBox(height: 24),
-          _buildUpcomingEvents(),
+          // _buildUpcomingEvents(),
         
-          SizedBox(height: 24),
+          // SizedBox(height: 24),
           // SizedBox(height: 24),
           _buildQuickActions(),
           SizedBox(height: 24),
