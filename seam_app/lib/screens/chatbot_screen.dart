@@ -10,7 +10,7 @@ class ChatbotScreen extends StatefulWidget {
 
 class _ChatbotScreenState extends State<ChatbotScreen> {
   late final WebViewController _controller;
-
+  //some changes
   @override
   void initState() {
     super.initState();
@@ -20,7 +20,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
       ..loadRequest(Uri.parse(
         'https://cdn.botpress.cloud/webchat/v2.3/shareable.html?configUrl=https://files.bpcontent.cloud/2025/04/04/11/20250404111014-4M9QKZKW.json',
       ))
-      ..runJavaScript('localStorage.clear(); sessionStorage.clear();'); // Fresh chat every time
+      ..runJavaScript('localStorage.clear(); sessionStorage.clear();'); 
   }
 
   @override
