@@ -12,10 +12,14 @@ import SentimentPage from "./pages/SentimentPage";
 import HeatMapPage from "./pages/HeatMapPage";
 import IssueResolver from "./pages/IssueResolver";
 import { IssueProvider } from "./contexts/IssueContext";
+import LostFoundPage from "./pages/LostFoundPage";
+import { LostFoundProvider } from "./contexts/LostFoundContext";
 
 function App() {
   return (
     <IssueProvider>
+      <LostFoundProvider>
+        
 
     <div className="flex h-screen bg-gray-900 text-gray-100 overflow-hidden">
       {/* BG */}
@@ -34,8 +38,10 @@ function App() {
         <Route path="/sentiment-analysis" element={<SentimentPage />} />
         <Route path="/heatmap" element={<HeatMapPage />} />
         <Route path="/issueresolve" element={<IssueResolver />} />
+        <Route path="/lostfound" element={<LostFoundPage />} /> 
       </Routes>
     </div>
+      </LostFoundProvider>
       </IssueProvider>
   );
 }

@@ -67,11 +67,95 @@
 // app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 
 
+//try1===============>
+
+// import express from 'express';
+// import cors from 'cors';
+// import { collection, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+// import { db } from './firebase.js';
+
+// const app = express();
+// app.use(express.json());
+// app.use(cors());
+
+// const complaintsRef = collection(db, "complaints");
+
+// // Just for testing
+// app.get('/', (req, res) => {
+//   res.send("Server is running and listening for new complaints.");
+// });
+
+// // Get all complaints
+// app.get('/complaints', async (req, res) => {
+//   try {
+//     const snapshot = await getDocs(complaintsRef);
+
+//     const complaints = snapshot.docs.map(doc => ({
+//       id: doc.id,
+//       ...doc.data(), // includes complaint_category, complaint, resolved etc.
+//     }));
+
+//     res.json({ complaints });
+
+//   } catch (error) {
+//     console.error("❌ Error fetching complaints:", error);
+//     res.status(500).json({ error: "Failed to fetch complaints" });
+//   }
+// });
+
+// // ⚠️ Mark complaint as resolved (instead of deleting)
+// app.patch('/resolve', async (req, res) => {
+//   const { id } = req.query;
+
+//   if (!id) {
+//     return res.status(400).json({ error: "ID is required in the query" });
+//   }
+
+//   try {
+//     const complaintRef = doc(db, 'complaints', id);
+//     await updateDoc(complaintRef, {
+//       resolved: true
+//     });
+
+//     res.json({ success: true, message: `Complaint with ID ${id} marked as resolved.` });
+//   } catch (error) {
+//     console.error("❌ Error updating complaint:", error);
+//     res.status(500).json({ error: "Failed to mark complaint as resolved" });
+//   }
+// });
+
+// // Optional: Still allow hard delete (use only if needed)
+// app.delete('/delete', async (req, res) => {
+//   const { id } = req.query;
+
+//   if (!id) {
+//     return res.status(400).json({ error: "ID is required in the query" });
+//   }
+
+//   try {
+//     const complaintRef = doc(db, 'complaints', id);
+//     await deleteDoc(complaintRef);
+//     res.json({ success: true, message: `Complaint with ID ${id} has been deleted.` });
+//   } catch (error) {
+//     console.error("❌ Error deleting complaint:", error);
+//     res.status(500).json({ error: "Failed to delete complaint" });
+//   }
+// });
+
+// const PORT = 4000;
+// app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+
+
+
+
+
+
+
 
 
 import express from 'express';
 import cors from 'cors';
-import { collection, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { db } from './firebase.js';
 
 const app = express();
@@ -80,57 +164,38 @@ app.use(cors());
 
 const complaintsRef = collection(db, "complaints");
 
-// Just for testing
+// Health check endpoint
 app.get('/', (req, res) => {
   res.send("Server is running and listening for new complaints.");
 });
 
-// Get all complaints
+// Get all complaints (now only used for admin/stats purposes)
 app.get('/complaints', async (req, res) => {
   try {
     const snapshot = await getDocs(complaintsRef);
-
     const complaints = snapshot.docs.map(doc => ({
       id: doc.id,
-      ...doc.data(), // includes complaint_category, complaint, resolved etc.
+      ...doc.data(),
     }));
-
     res.json({ complaints });
-
   } catch (error) {
     console.error("❌ Error fetching complaints:", error);
     res.status(500).json({ error: "Failed to fetch complaints" });
   }
 });
 
-// ⚠️ Mark complaint as resolved (instead of deleting)
-app.patch('/resolve', async (req, res) => {
-  const { id } = req.query;
-
-  if (!id) {
-    return res.status(400).json({ error: "ID is required in the query" });
-  }
-
-  try {
-    const complaintRef = doc(db, 'complaints', id);
-    await updateDoc(complaintRef, {
-      resolved: true
-    });
-
-    res.json({ success: true, message: `Complaint with ID ${id} marked as resolved.` });
-  } catch (error) {
-    console.error("❌ Error updating complaint:", error);
-    res.status(500).json({ error: "Failed to mark complaint as resolved" });
-  }
-});
-
-// Optional: Still allow hard delete (use only if needed)
+// Optional: Hard delete endpoint (secured for admin use only)
 app.delete('/delete', async (req, res) => {
   const { id } = req.query;
 
   if (!id) {
     return res.status(400).json({ error: "ID is required in the query" });
   }
+
+  // Add authentication check here in production
+  // if (!req.user || !req.user.isAdmin) {
+  //   return res.status(403).json({ error: "Unauthorized" });
+  // }
 
   try {
     const complaintRef = doc(db, 'complaints', id);
@@ -139,6 +204,31 @@ app.delete('/delete', async (req, res) => {
   } catch (error) {
     console.error("❌ Error deleting complaint:", error);
     res.status(500).json({ error: "Failed to delete complaint" });
+  }
+});
+
+// New endpoint for bulk data (stats/analytics)
+app.get('/stats', async (req, res) => {
+  try {
+    const snapshot = await getDocs(complaintsRef);
+    const complaints = snapshot.docs.map(doc => ({
+      resolved: doc.data().resolved || false
+    }));
+
+    const solved = complaints.filter(c => c.resolved).length;
+    const pending = complaints.length - solved;
+    const happiness = complaints.length > 0 ? 
+      (solved / complaints.length) * 100 : 0;
+
+    res.json({
+      pending,
+      solved,
+      total: complaints.length,
+      happiness: Math.round(happiness)
+    });
+  } catch (error) {
+    console.error("❌ Error fetching stats:", error);
+    res.status(500).json({ error: "Failed to fetch stats" });
   }
 });
 

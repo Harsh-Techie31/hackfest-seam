@@ -4,10 +4,12 @@ import { UserCheck, UsersIcon,UserX,UserPlus} from 'lucide-react'
 import StatCard from '../components/common/StatCard'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
+import { useSpamDetection } from '../hooks/useSpamDetection'; // adjust path as needed
+
 
 function SentimentPage() {
 
-
+  const { detectSpam } = useSpamDetection();
   const [data, setData] = useState([]);
   const [userInput, setUserInput] = useState("");
   const [countP,setCountP] = useState(0);
@@ -81,7 +83,7 @@ function SentimentPage() {
       body: JSON.stringify({
         lang:"en",
         near:"India",
-        maxItems: 10,
+        maxItems: 40,
         searchTerms: [userInput],
       }),
     };
@@ -93,18 +95,54 @@ function SentimentPage() {
       );
       const result = await response.json();
 
-      // Process tweets and send them to Hugging Face
-      const formattedData = await Promise.all(
-        result.map(async (item) => {
-          const sentimentResponse = await analyzeSentiment(item.text);
-          console.log(sentimentResponse);
-          return {
-            text: item.text,
-            username: item.author.userName,
-            sentiment: sentimentResponse
-          };
-        })
-      );
+      // // Process tweets and send them to Hugging Face
+      // const formattedData = await Promise.all(
+      //   result.map(async (item) => {
+      //     const isSpam = await detectSpam(item.text);
+      //     if (isSpam) {
+      //       return {
+      //         text: item.text,
+      //         username: item.author.userName,
+      //         sentiment: "SPAM"
+      //       };
+      //     }
+      
+      //     const sentimentResponse = await analyzeSentiment(item.text);
+      //     return {
+      //       text: item.text,
+      //       username: item.author.userName,
+      //       sentiment: sentimentResponse
+      //     };
+      //   })
+      // );
+      
+
+      // 1. Remove duplicate tweets based on text
+const uniqueTweets = Array.from(
+  new Map(result.map(item => [item.text, item])).values()
+);
+
+// 2. Process only unique tweets
+const formattedData = await Promise.all(
+  uniqueTweets.map(async (item) => {
+    const isSpam = await detectSpam(item.text); // assume you have this function ready
+    if (isSpam) {
+      return {
+        text: item.text,
+        username: item.author.userName,
+        sentiment: "SPAM"
+      };
+    }
+
+    const sentimentResponse = await analyzeSentiment(item.text);
+    return {
+      text: item.text,
+      username: item.author.userName,
+      sentiment: sentimentResponse
+    };
+  })
+);
+
 
       setData(formattedData);
       console.log("Fetched Data with Sentiment:", formattedData);
@@ -203,14 +241,16 @@ function SentimentPage() {
         <td className="py-2 px-4 font-semibold">{item.username}</td>
         <td className="py-2 px-4">{item.text}</td>
         <td className="py-2 px-4">
-          <span
+         <span
             className={`px-2 py-1 rounded-md text-white 
               ${item.sentiment === "POSITIVE" ? "bg-green-600" : 
                 item.sentiment === "NEGATIVE" ? "bg-red-600" : 
+                item.sentiment === "SPAM" ? "bg-black" :
                 "bg-yellow-500"}`}
-          >
+                  >
             {item.sentiment}
           </span>
+
         </td>
       </tr>
     ))}

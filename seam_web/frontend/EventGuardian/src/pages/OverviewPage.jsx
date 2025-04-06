@@ -8,6 +8,7 @@ import CategoryDistributionChart from "../components/overview/CategoryDistributi
 import SalesChannelChart from "../components/overview/SalesChannelChart";
 import HappinessIndex from "../components/overview/HappinessIndex";
 import { IssueContext } from "../contexts/IssueContext";
+import TransparencyIndex from "../components/overview/TransparencyIndex";
 
 const OverviewPage = () => {
 	const { stats } = useContext(IssueContext);
@@ -33,12 +34,32 @@ const OverviewPage = () => {
 				{/* CHARTS */}
 
 				{/* grid grid-cols-1 lg:grid-cols-2 gap-8  */}
-				<div className='	grid grid-cols-1 lg:grid-cols-2 gap-8'>
-					<HappinessIndex value={stats.happinesss} />
-			{/* <h2>Haapine</h2> */}
+				{/* <div className='	grid grid-cols-1 lg:grid-cols-2 gap-2'>
+					<HappinessIndex value={stats.happiness} />
 					<CategoryDistributionChart />
-				{/* <SalesChannelChart /> */}
-				</div>
+					<TransparencyIndex/>
+		
+				</div> */}
+
+
+					<div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+					{/* Row 1 - Column 1 */}
+					<div className="row-span-1">
+						<HappinessIndex value={stats.happiness} />
+					</div>
+
+					{/* Row 1 - Column 2 */}
+					<div className="row-span-1">
+						<CategoryDistributionChart />
+					</div>
+
+					{/* Row 2 - spans only first column */}
+					<div className="lg:col-span-1">
+						{/* <TransparencyIndex /> */}
+					</div>
+					</div>
+
+
 			</main>
 		</div>
 	);

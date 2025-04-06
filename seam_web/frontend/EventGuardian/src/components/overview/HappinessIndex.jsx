@@ -1,20 +1,26 @@
 // import React from "react";
 // import ReactSpeedometer from "react-d3-speedometer";
+// import { IssueContext } from "../../contexts/IssueContext";
 
 // const HappinessIndex = ({ value }) => {
+//     const {stats} =React.useContext(IssueContext);
 //   return (
-//     <div className="flex justify-center items-center p-4 bg-gray-100 rounded-lg shadow-md">
+//     <>
+//     <div className="flex justify-center items-center p-10 ">
 //       <ReactSpeedometer
-//         value={value}
+//         value={stats.happiness}
 //         minValue={0}
 //         maxValue={100}
-//         segments={5}
-//         needleColor="red"
-//         startColor="green"
-//         endColor="red"
-//         textColor="black"
+//         segments={20}
+//         needleColor="white"
+//         startColor="red"
+//         endColor="green"
+//         textColor="white"
+//         fluidWidth={true} // Ensures it adapts to the parent container
 //       />
 //     </div>
+    
+//       </>
 //   );
 // };
 
@@ -26,12 +32,15 @@ import ReactSpeedometer from "react-d3-speedometer";
 import { IssueContext } from "../../contexts/IssueContext";
 
 const HappinessIndex = ({ value }) => {
-    const {stats} =React.useContext(IssueContext);
+  const { stats } = React.useContext(IssueContext);
+
+  // Fallback if value is undefined
+  const happinessValue = value ?? stats?.happiness ?? 0;
+
   return (
-    <>
-    <div className="flex justify-center items-center p-10 ">
+    <div className="w-full lg:w-[500px] h-[300px] flex justify-center items-center p-4">
       <ReactSpeedometer
-        value={stats.happiness}
+        value={happinessValue}
         minValue={0}
         maxValue={100}
         segments={20}
@@ -39,12 +48,10 @@ const HappinessIndex = ({ value }) => {
         startColor="red"
         endColor="green"
         textColor="white"
-        fluidWidth={true} // Ensures it adapts to the parent container
-        // segmentColors={["red", "orange", "yellow", "green"]}
+        height={300}
+        width={500}
       />
     </div>
-      {/* <h1>hello</h1> */}
-      </>
   );
 };
 

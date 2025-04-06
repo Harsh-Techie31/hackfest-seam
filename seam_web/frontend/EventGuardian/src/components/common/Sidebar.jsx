@@ -17,6 +17,7 @@ const SIDEBAR_ITEMS = [
 	{ name: "Sentiment Analysis", icon: BarChart2, color: "#6366f1", href: "/sentiment-analysis" },
 	{ name: "HeatMap", icon: BarChart2, color: "#6366f1", href: "/heatmap" },
 	{ name: "Issue Resolver", icon: BarChart2, color: "#6366f1", href: "/issueresolve" },
+	{ name: "Lost & Found", icon: BarChart2, color: "#6366f1", href: "/lostfound" },
 ];
 
 const Sidebar = () => {
