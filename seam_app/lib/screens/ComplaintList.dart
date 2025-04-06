@@ -76,10 +76,18 @@ class _ComplaintlistState extends State<Complaintlist> {
         elevation: 4,
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: _firestore.collection('complaints').snapshots(),
+        stream:
+            _firestore
+                .collection('complaints')
+                .where('resolved', isEqualTo: false)
+                .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: Text("All Complaints solved !!"));
+          }
+
+          if (snapshot.hasData && snapshot.data!.docs.isEmpty) {
+            return const Center(child: Text("All Complaints solved !!"));
           }
 
           final complaints = snapshot.data!.docs;
